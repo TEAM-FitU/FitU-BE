@@ -26,21 +26,21 @@ public class AiRecommendation {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "text", column = @Column(name = "ai_recommendation_text_1")),
+            @AttributeOverride(name = "text", column = @Column(name = "ai_recommendation_text_1", columnDefinition = "LONGTEXT")),
             @AttributeOverride(name = "imageUrl", column = @Column(name = "ai_recommendation_image_url_1"))
     })
     private Content content1;
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "text", column = @Column(name = "ai_recommendation_text_2")),
+            @AttributeOverride(name = "text", column = @Column(name = "ai_recommendation_text_2", columnDefinition = "LONGTEXT")),
             @AttributeOverride(name = "imageUrl", column = @Column(name = "ai_recommendation_image_url_2"))
     })
     private Content content2;
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "text", column = @Column(name = "ai_recommendation_text_3")),
+            @AttributeOverride(name = "text", column = @Column(name = "ai_recommendation_text_3", columnDefinition = "LONGTEXT")),
             @AttributeOverride(name = "imageUrl", column = @Column(name = "ai_recommendation_image_url_3"))
     })
     private Content content3;
