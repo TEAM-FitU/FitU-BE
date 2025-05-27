@@ -1,5 +1,7 @@
 package com.fitu.fitu.domain.recommendation.service;
 
+import com.fitu.fitu.domain.recommendation.dto.request.RecommendOutfitRequest;
+import com.fitu.fitu.domain.recommendation.entity.AiRecommendation;
 import com.fitu.fitu.domain.recommendation.repository.AiRecommendationRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +14,7 @@ public class AiRecommendationService {
     private final AiRecommendationRepository aiRecommendationRepository;
 
     @Transactional
-    public void recommendStyling() {
+    public AiRecommendation recommendOutfit(final RecommendOutfitRequest requestDto) {
 
     }
 }
