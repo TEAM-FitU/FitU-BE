@@ -4,9 +4,12 @@ import com.fitu.fitu.domain.user.dto.request.ProfileRequest;
 import com.fitu.fitu.domain.user.entity.User;
 import com.fitu.fitu.domain.user.exception.UserNotFoundException;
 import com.fitu.fitu.domain.user.repository.UserRepository;
+import com.fitu.fitu.global.util.FileValidator;
+import com.fitu.fitu.infra.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -15,7 +18,10 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final S3Service s3Service;
+    private final FileValidator fileValidator;
 
+    @Transactional
     public User registerProfile(final ProfileRequest requestDto) {
         String userId = generateUserId();
 
@@ -36,6 +42,15 @@ public class UserService {
         user.setBodyImageUrl(requestDto.bodyImageUrl());
 
         return user;
+    }
+
+    @Transactional
+    public String analyzeBodyImage(final MultipartFile file) {
+        fileValidator.validateImage(file);
+
+        // TODO 전신 사진 유효성 검사 AI API 연동
+
+        return s3Service.upload(file, "bodyImage/");
     }
 
     @Transactional(readOnly = true)

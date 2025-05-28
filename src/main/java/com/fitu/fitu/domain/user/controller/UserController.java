@@ -1,12 +1,15 @@
 package com.fitu.fitu.domain.user.controller;
 
 import com.fitu.fitu.domain.user.dto.request.ProfileRequest;
+import com.fitu.fitu.domain.user.dto.response.AnalyzeBodyImageResponse;
 import com.fitu.fitu.domain.user.dto.response.ProfileResponse;
 import com.fitu.fitu.domain.user.entity.User;
 import com.fitu.fitu.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequestMapping("/user")
 @RequiredArgsConstructor
@@ -31,9 +34,16 @@ public class UserController {
 
     @PatchMapping("/profile")
     public ProfileResponse updateProfile(@RequestHeader("Fitu-User-UUID") final String userId,
-                                       @Valid @RequestBody final ProfileRequest requestDto) {
+                                         @Valid @RequestBody final ProfileRequest requestDto) {
         final User user = userService.updateProfile(userId, requestDto);
 
         return ProfileResponse.of(user);
+    }
+
+    @PostMapping(value = "/profile/image-analysis", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public AnalyzeBodyImageResponse analyzeBodyImage(@RequestPart(value = "bodyImage") final MultipartFile file) {
+        String imageUrl = userService.analyzeBodyImage(file);
+
+        return new AnalyzeBodyImageResponse(imageUrl);
     }
 }
