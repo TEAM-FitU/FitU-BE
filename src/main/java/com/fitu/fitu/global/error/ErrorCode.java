@@ -11,11 +11,21 @@ public enum ErrorCode {
     ENTITY_NOT_FOUND(400, "COMMON003", "Entity Not Found"),
 
     /* USER ERROR */
-    USER_NOT_FOUND(400, "USER003", "User Not Found");
+    USER_NOT_FOUND(400, "USER003", "User Not Found"),
 
     /* CLOTHES ERROR */
 
     /* RECOMMENDATION ERROR */
+
+    /* S3 ERROR */
+    S3_UPLOAD_FAILED(500, "S3001", "Failed to upload file to S3"),
+    S3_DELETE_FAILED(500, "S3002", "Failed to delete file from S3"),
+    S3_INVALID_URL(400, "S3003", "Invalid S3 file URL"),
+
+    /* File ERROR */
+    FILE_NOT_FOUND(400, "FILE001", "File Not Found"),
+    FILE_INVALID_EXTENSION(400, "FILE002", "Invalid File Extension");
+
 
     private final int status;
     private final String code;
