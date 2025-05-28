@@ -28,4 +28,12 @@ public class UserController {
 
         return ProfileResponse.of(user);
     }
+
+    @PatchMapping("/profile")
+    public ProfileResponse updateProfile(@RequestHeader("Fitu-User-UUID") final String userId,
+                                       @Valid @RequestBody final ProfileRequest requestDto) {
+        final User user = userService.updateProfile(userId, requestDto);
+
+        return ProfileResponse.of(user);
+    }
 }

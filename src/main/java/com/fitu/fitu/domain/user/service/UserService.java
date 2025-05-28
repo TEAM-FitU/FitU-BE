@@ -24,6 +24,20 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @Transactional
+    public User updateProfile(final String userId, final ProfileRequest requestDto) {
+        final User user = findById(userId);
+
+        user.setAge(requestDto.age());
+        user.setGender(requestDto.gender());
+        user.setHeight(requestDto.height());
+        user.setWeight(requestDto.weight());
+        user.setSkinTone(requestDto.skinTone());
+        user.setBodyImageUrl(requestDto.bodyImageUrl());
+
+        return user;
+    }
+
     @Transactional(readOnly = true)
     public User getProfile(final String userId) {
         final User user = findById(userId);
