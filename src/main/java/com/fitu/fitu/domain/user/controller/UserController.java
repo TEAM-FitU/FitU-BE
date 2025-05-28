@@ -21,4 +21,11 @@ public class UserController {
 
         return ProfileResponse.of(user);
     }
+
+    @GetMapping("/profile")
+    public ProfileResponse getProfile(@RequestHeader("Fitu-User-UUID") final String userId) {
+        final User user = userService.getProfile(userId);
+
+        return ProfileResponse.of(user);
+    }
 }

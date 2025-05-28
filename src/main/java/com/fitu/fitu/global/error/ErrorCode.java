@@ -8,9 +8,10 @@ public enum ErrorCode {
     /* COMMON ERROR */
     INTERNAL_SERVER_ERROR(500, "COMMON001", "Internal Server Error"),
     INVALID_INPUT_VALUE(400, "COMMON002", "Invalid Input Value"),
-    ENTITY_NOT_FOUND(400, "COMMON003", "Entity Not Found");
+    ENTITY_NOT_FOUND(400, "COMMON003", "Entity Not Found"),
 
     /* USER ERROR */
+    USER_NOT_FOUND(400, "USER003", "User Not Found");
 
     /* CLOTHES ERROR */
 
