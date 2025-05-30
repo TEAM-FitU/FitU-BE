@@ -3,6 +3,7 @@ package com.fitu.fitu.domain.recommendation.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,4 +17,10 @@ public class Content {
 
     @Column(nullable = false)
     private String imageUrl;
+
+    @Builder
+    public Content(final String text, final String imageUrl) {
+        this.text = text;
+        this.imageUrl = imageUrl;
+    }
 }
