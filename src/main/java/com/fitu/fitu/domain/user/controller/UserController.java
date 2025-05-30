@@ -42,8 +42,6 @@ public class UserController {
 
     @PostMapping(value = "/profile/image-analysis", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public AnalyzeBodyImageResponse analyzeBodyImage(@RequestPart(value = "bodyImage") final MultipartFile file) {
-        String imageUrl = userService.analyzeBodyImage(file);
-
-        return new AnalyzeBodyImageResponse(imageUrl);
+        return new AnalyzeBodyImageResponse(userService.analyzeBodyImage(file));
     }
 }

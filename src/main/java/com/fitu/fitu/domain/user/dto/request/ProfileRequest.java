@@ -27,6 +27,7 @@ public record ProfileRequest(
                 .height(height)
                 .weight(weight)
                 .skinTone(skinTone)
-                .bodyImageUrl(bodyImageUrl).build();
+                .bodyImageUrl(bodyImageUrl)
+                .build();
     }
 }

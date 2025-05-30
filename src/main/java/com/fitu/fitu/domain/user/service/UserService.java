@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -27,6 +28,10 @@ public class UserService {
 
         final User user = requestDto.toEntity(userId);
 
+        if (user.getBodyImageUrl() != null) {
+            user.setBodyImageUrl(s3Service.copy(user.getBodyImageUrl(), "bodyImage/"));
+        }
+
         return userRepository.save(user);
     }
 
@@ -39,7 +44,10 @@ public class UserService {
         user.setHeight(requestDto.height());
         user.setWeight(requestDto.weight());
         user.setSkinTone(requestDto.skinTone());
-        user.setBodyImageUrl(requestDto.bodyImageUrl());
+
+        if (!Objects.equals(user.getBodyImageUrl(), requestDto.bodyImageUrl())) {
+            updateBodyImage(user, requestDto.bodyImageUrl());
+        }
 
         return user;
     }
@@ -48,9 +56,9 @@ public class UserService {
     public String analyzeBodyImage(final MultipartFile file) {
         fileValidator.validateImage(file);
 
-        // TODO 전신 사진 유효성 검사 AI API 연동
+//        TODO 전신 사진 유효성 검사 AI API 호출
 
-        return s3Service.upload(file, "bodyImage/");
+        return s3Service.upload("temp/", file);
     }
 
     @Transactional(readOnly = true)
@@ -66,5 +74,13 @@ public class UserService {
 
     private User findById(final String userId) {
         return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+    }
+
+    private void updateBodyImage(final User user, final String bodyImageUrl) {
+        if (bodyImageUrl != null) {
+            user.setBodyImageUrl(s3Service.copy(bodyImageUrl, "bodyImage/"));
+        } else {
+            user.setBodyImageUrl(null);
+        }
     }
 }
