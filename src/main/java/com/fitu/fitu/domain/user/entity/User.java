@@ -4,10 +4,7 @@ import com.fitu.fitu.domain.user.entity.enums.Gender;
 import com.fitu.fitu.domain.user.entity.enums.SkinTone;
 import com.fitu.fitu.global.common.domain.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -18,23 +15,29 @@ public class User extends BaseEntity {
     @Id
     private String id;
 
+    @Setter
     @Column(nullable = false)
     private int age;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Gender gender;
 
+    @Setter
     @Column(nullable = false)
     private int height;
 
+    @Setter
     @Column(nullable = false)
     private int weight;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private SkinTone skinTone;
 
+    @Setter
     @Column
     private String bodyImageUrl;
 
