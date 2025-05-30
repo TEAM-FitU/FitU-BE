@@ -5,7 +5,7 @@ import com.fitu.fitu.domain.user.entity.User;
 import com.fitu.fitu.domain.user.exception.UserNotFoundException;
 import com.fitu.fitu.domain.user.repository.UserRepository;
 import com.fitu.fitu.global.util.FileValidator;
-import com.fitu.fitu.infra.s3.S3Service;
+import com.fitu.fitu.infra.s3.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +19,7 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final S3Service s3Service;
+    private final S3Uploader s3Uploader;
     private final FileValidator fileValidator;
 
     @Transactional
@@ -29,7 +29,7 @@ public class UserService {
         final User user = requestDto.toEntity(userId);
 
         if (user.getBodyImageUrl() != null) {
-            user.setBodyImageUrl(s3Service.copy(user.getBodyImageUrl(), "bodyImage/"));
+            user.setBodyImageUrl(s3Uploader.copy(user.getBodyImageUrl(), "bodyImage/"));
         }
 
         return userRepository.save(user);
@@ -58,7 +58,7 @@ public class UserService {
 
 //        TODO 전신 사진 유효성 검사 AI API 호출
 
-        return s3Service.upload("temp/", file);
+        return s3Uploader.upload("temp/", file);
     }
 
     @Transactional(readOnly = true)
@@ -73,12 +73,13 @@ public class UserService {
     }
 
     private User findById(final String userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
     }
 
     private void updateBodyImage(final User user, final String bodyImageUrl) {
         if (bodyImageUrl != null) {
-            user.setBodyImageUrl(s3Service.copy(bodyImageUrl, "bodyImage/"));
+            user.setBodyImageUrl(s3Uploader.copy(bodyImageUrl, "bodyImage/"));
         } else {
             user.setBodyImageUrl(null);
         }
