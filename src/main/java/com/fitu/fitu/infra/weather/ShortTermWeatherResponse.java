@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class WeatherDataDto {
+public class ShortTermWeatherResponse {
     private Response response;
 
     @Data
@@ -24,6 +24,9 @@ public class WeatherDataDto {
     static class Body {
         private String dataType;
         private Items items;
+        private int pageNo;
+        private int numOfRows;
+        private int totalCount;
     }
 
     @Data
