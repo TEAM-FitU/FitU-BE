@@ -1,4 +1,4 @@
-package com.fitu.fitu.infra.weather;
+package com.fitu.fitu.infra.weather.util;
 
 import org.springframework.stereotype.Component;
 

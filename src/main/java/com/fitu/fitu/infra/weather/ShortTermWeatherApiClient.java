@@ -1,5 +1,6 @@
 package com.fitu.fitu.infra.weather;
 
+import com.fitu.fitu.infra.weather.util.BaseDateTimeGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -14,7 +15,7 @@ public class ShortTermWeatherApiClient {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    private static final String baseUrl = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst";
+    private static final String BASE_URL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst";
 
     @Value("${infra.weather.api.service-key}")
     private String serviceKey;
@@ -29,7 +30,7 @@ public class ShortTermWeatherApiClient {
     private String getRequestUrl(final LocalDateTime now, final int nx, final int ny) {
         final BaseDateTimeGenerator.BaseDateTime baseDateTime = baseDateTimeGenerator.generateBaseDateTimeForShortTerm(now);
 
-        return UriComponentsBuilder.fromUriString(baseUrl)
+        return UriComponentsBuilder.fromUriString(BASE_URL)
                 .queryParam("ServiceKey", serviceKey)
                 .queryParam("pageNo", "1")
                 .queryParam("numOfRows", "1000")
