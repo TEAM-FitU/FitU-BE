@@ -1,15 +1,16 @@
 package com.fitu.fitu.infra.weather.geocoding;
 
-import lombok.Data;
+
+import lombok.Getter;
 
 import java.util.List;
 
-@Data
+@Getter
 public class GeocodingResponse {
     private List<Document> documents;
     private Meta meta;
 
-    @Data
+    @Getter
     public static class Document {
         private String address_name;
         private String category_group_code;
@@ -25,7 +26,7 @@ public class GeocodingResponse {
         private String y;
     }
 
-    @Data
+    @Getter
     public static class Meta {
         private boolean is_end;
         private int pageable_count;
@@ -33,7 +34,7 @@ public class GeocodingResponse {
         private int total_count;
     }
 
-    @Data
+    @Getter
     public static class SameName {
         private String keyword;
         private List<String> region;

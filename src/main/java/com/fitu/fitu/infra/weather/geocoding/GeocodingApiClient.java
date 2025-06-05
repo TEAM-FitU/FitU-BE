@@ -18,7 +18,7 @@ public class GeocodingApiClient {
     @Value("{infra.geocoding.api.service-key}")
     private String serviceKey;
 
-    public GeocodingResponse getCoordinate(final String query) {
+    public GeocodingResponse getCoordinateAndAddress(final String query) {
         final HttpEntity<Void> headers = getHttpHeaders();
         final String requestUrl = getRequestUrl(query);
 

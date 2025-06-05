@@ -1,27 +1,27 @@
 package com.fitu.fitu.infra.weather;
 
-import lombok.Data;
+import lombok.Getter;
 
 import java.util.List;
 
-@Data
+@Getter
 public class ShortTermWeatherResponse {
     private Response response;
 
-    @Data
-    static class Response {
+    @Getter
+    public static class Response {
         private Header header;
         private Body body;
     }
 
-    @Data
-    static class Header {
+    @Getter
+    public static class Header {
         private String resultCode;
         private String resultMsg;
     }
 
-    @Data
-    static class Body {
+    @Getter
+    public static class Body {
         private String dataType;
         private Items items;
         private int pageNo;
@@ -29,13 +29,13 @@ public class ShortTermWeatherResponse {
         private int totalCount;
     }
 
-    @Data
-    static class Items {
+    @Getter
+    public static class Items {
         private List<Item> item;
     }
 
-    @Data
-    static class Item {
+    @Getter
+    public static class Item {
         private String baseDate;
         private String baseTime;
         private String fcstDate;
