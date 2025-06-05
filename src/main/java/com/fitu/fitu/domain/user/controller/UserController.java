@@ -1,7 +1,7 @@
 package com.fitu.fitu.domain.user.controller;
 
 import com.fitu.fitu.domain.user.dto.request.ProfileRequest;
-import com.fitu.fitu.domain.user.dto.response.AnalyzeBodyImageResponse;
+import com.fitu.fitu.domain.user.dto.response.BodyImageAnalysisResponse;
 import com.fitu.fitu.domain.user.dto.response.ProfileResponse;
 import com.fitu.fitu.domain.user.entity.User;
 import com.fitu.fitu.domain.user.service.UserService;
@@ -41,7 +41,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/profile/image-analysis", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public AnalyzeBodyImageResponse analyzeBodyImage(@RequestPart(value = "bodyImage") final MultipartFile file) {
-        return new AnalyzeBodyImageResponse(userService.analyzeBodyImage(file));
+    public BodyImageAnalysisResponse analyzeBodyImage(@RequestPart(value = "bodyImage") final MultipartFile file) {
+         return userService.analyzeBodyImage(file);
     }
 }

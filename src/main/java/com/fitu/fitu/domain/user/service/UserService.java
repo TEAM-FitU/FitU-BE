@@ -1,10 +1,13 @@
 package com.fitu.fitu.domain.user.service;
 
 import com.fitu.fitu.domain.user.dto.request.ProfileRequest;
+import com.fitu.fitu.domain.user.dto.response.BodyImageAnalysisResponse;
+import com.fitu.fitu.infra.ai.bodyimage.dto.response.BodyImageAiResponse;
 import com.fitu.fitu.domain.user.entity.User;
 import com.fitu.fitu.domain.user.exception.UserNotFoundException;
 import com.fitu.fitu.domain.user.repository.UserRepository;
 import com.fitu.fitu.global.util.FileValidator;
+import com.fitu.fitu.infra.ai.bodyimage.BodyImageAiClient;
 import com.fitu.fitu.infra.s3.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,10 +24,11 @@ public class UserService {
     private final UserRepository userRepository;
     private final S3Uploader s3Uploader;
     private final FileValidator fileValidator;
+    private final BodyImageAiClient bodyImageAiClient;
 
     @Transactional
     public User registerProfile(final ProfileRequest requestDto) {
-        String userId = generateUserId();
+        final String userId = generateUserId();
 
         final User user = requestDto.toEntity(userId);
 
@@ -53,12 +57,14 @@ public class UserService {
     }
 
     @Transactional
-    public String analyzeBodyImage(final MultipartFile file) {
+    public BodyImageAnalysisResponse analyzeBodyImage(final MultipartFile file) {
         fileValidator.validateImage(file);
 
-//        TODO 전신 사진 유효성 검사 AI API 호출
+        final String s3Url = s3Uploader.upload("temp/", file);
 
-        return s3Uploader.upload("temp/", file);
+        final BodyImageAiResponse response = bodyImageAiClient.analyzeBodyImage(s3Url);
+
+        return new BodyImageAnalysisResponse(s3Url, response.warnings());
     }
 
     @Transactional(readOnly = true)
