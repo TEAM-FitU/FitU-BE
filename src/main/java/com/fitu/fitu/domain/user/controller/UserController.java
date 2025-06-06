@@ -11,8 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-@RequestMapping("/user")
 @RequiredArgsConstructor
+@RequestMapping("/user")
 @RestController
 public class UserController {
 
