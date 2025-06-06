@@ -49,8 +49,8 @@ public class WeatherService {
     private Grid getGridForShortTermWeather(final String targetPlace) {
         final GeocodingResponse geocodingResponse = geocodingApiClient.getCoordinateAndAddress(targetPlace);
 
-        final int lon = Integer.parseInt(geocodingResponse.getDocuments().getFirst().getX());
-        final int lat = Integer.parseInt(geocodingResponse.getDocuments().getFirst().getY());
+        final int lon = (int) Double.parseDouble(geocodingResponse.getDocuments().getFirst().getX());
+        final int lat = (int) Double.parseDouble(geocodingResponse.getDocuments().getFirst().getY());
 
         return ShortTermWeatherGridConverter.convert(lat, lon);
     }
@@ -80,7 +80,7 @@ public class WeatherService {
     private int parseTemperatureFieldForShortTermWeather(final List<ShortTermWeatherResponse.Item> filteredItems, final String category, final int orElseValue) {
         return filteredItems.stream()
                 .filter(item -> category.equals(item.getCategory()))
-                .map(item -> Integer.parseInt(item.getFcstValue()))
+                .map(item -> (int) Double.parseDouble(item.getFcstValue()))
                 .findFirst()
                 .orElse(orElseValue);
     }

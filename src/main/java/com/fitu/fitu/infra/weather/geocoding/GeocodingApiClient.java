@@ -15,7 +15,7 @@ public class GeocodingApiClient {
 
     private static final String BASE_URL = "https://dapi.kakao.com/v2/local/search/keyword";
 
-    @Value("{infra.geocoding.api.service-key}")
+    @Value("${infra.geocoding.api.service-key}")
     private String serviceKey;
 
     public GeocodingResponse getCoordinateAndAddress(final String query) {

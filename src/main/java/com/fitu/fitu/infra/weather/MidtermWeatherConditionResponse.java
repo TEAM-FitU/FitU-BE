@@ -36,7 +36,7 @@ public class MidtermWeatherConditionResponse {
 
     @Getter
     public static class Item {
-        private int regId;
+        private String regId;
         private int rnSt4Am;
         private int rnSt4Pm;
         private int rnSt5Am;

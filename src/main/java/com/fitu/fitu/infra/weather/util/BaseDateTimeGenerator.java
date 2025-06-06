@@ -1,29 +1,26 @@
 package com.fitu.fitu.infra.weather.util;
 
-import org.springframework.stereotype.Component;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-@Component
 public class BaseDateTimeGenerator {
 
     private static final List<Integer> SHORT_TERM_BASE_HOURS = List.of(2, 5, 8, 11, 14, 17, 20, 23);
     private static final List<Integer> MIDTERM_BASE_HOURS = List.of(6, 18);
     private static final int MINUTE_OFFSET = 10;
 
-    public BaseDateTime generateBaseDateTimeForShortTerm(final LocalDateTime now) {
+    public static BaseDateTime generateBaseDateTimeForShortTerm(final LocalDateTime now) {
         return getBaseDateTime(SHORT_TERM_BASE_HOURS, now);
     }
 
-    public String generateBaseDateTimeForMidTerm(final LocalDateTime now) {
+    public static String generateBaseDateTimeForMidTerm(final LocalDateTime now) {
         BaseDateTime baseDateTime = getBaseDateTime(MIDTERM_BASE_HOURS, now);
 
         return baseDateTime.baseDate + baseDateTime.baseTime;
     }
 
-    private BaseDateTime getBaseDateTime(final List<Integer> baseHours, LocalDateTime now) {
+    private static BaseDateTime getBaseDateTime(final List<Integer> baseHours, LocalDateTime now) {
         now = now.minusMinutes(MINUTE_OFFSET);
 
         int nowHour = now.getHour();
@@ -31,7 +28,7 @@ public class BaseDateTimeGenerator {
 
         if (nowHour < baseHours.getFirst()) {
             now = now.minusDays(1);
-            baseHour = baseHours.get(baseHours.getLast());
+            baseHour = baseHours.getLast();
         } else {
             baseHour = baseHours.stream()
                     .filter(h -> nowHour >= h)

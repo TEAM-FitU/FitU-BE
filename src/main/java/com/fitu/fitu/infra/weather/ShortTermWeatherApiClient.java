@@ -6,12 +6,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.time.LocalDateTime;
 
 @Component
 public class ShortTermWeatherApiClient {
-
-    private BaseDateTimeGenerator baseDateTimeGenerator;
 
     private final RestTemplate restTemplate = new RestTemplate();
 
@@ -21,17 +20,16 @@ public class ShortTermWeatherApiClient {
     private String serviceKey;
 
     public ShortTermWeatherResponse getWeather(final int nx, final int ny) {
-        final String requestUrl = getRequestUrl(LocalDateTime.now(), nx, ny);
+        final URI requestUrl = getRequestUrl(LocalDateTime.now(), nx, ny);
 
-        return restTemplate.getForEntity(requestUrl, ShortTermWeatherResponse.class)
-                .getBody();
+        return restTemplate.getForEntity(requestUrl, ShortTermWeatherResponse.class).getBody();
     }
 
-    private String getRequestUrl(final LocalDateTime now, final int nx, final int ny) {
-        final BaseDateTimeGenerator.BaseDateTime baseDateTime = baseDateTimeGenerator.generateBaseDateTimeForShortTerm(now);
+    private URI getRequestUrl(final LocalDateTime now, final int nx, final int ny) {
+        final BaseDateTimeGenerator.BaseDateTime baseDateTime = BaseDateTimeGenerator.generateBaseDateTimeForShortTerm(now);
 
-        return UriComponentsBuilder.fromUriString(BASE_URL)
-                .queryParam("ServiceKey", serviceKey)
+        final String requestUrl = UriComponentsBuilder.fromUriString(BASE_URL)
+                .queryParam("serviceKey", serviceKey)
                 .queryParam("pageNo", "1")
                 .queryParam("numOfRows", "1000")
                 .queryParam("dataType", "JSON")
@@ -41,5 +39,7 @@ public class ShortTermWeatherApiClient {
                 .queryParam("ny", ny)
                 .build()
                 .toUriString();
+
+        return URI.create(requestUrl);
     }
 }
