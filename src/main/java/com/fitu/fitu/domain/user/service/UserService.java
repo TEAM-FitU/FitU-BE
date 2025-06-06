@@ -2,16 +2,18 @@ package com.fitu.fitu.domain.user.service;
 
 import com.fitu.fitu.domain.user.dto.request.ProfileRequest;
 import com.fitu.fitu.domain.user.dto.response.BodyImageAnalysisResponse;
-import com.fitu.fitu.infra.ai.bodyimage.dto.response.BodyImageAiResponse;
+import com.fitu.fitu.infra.ai.bodyimage.AiBodyImageResponse;
 import com.fitu.fitu.domain.user.entity.User;
 import com.fitu.fitu.domain.user.exception.UserNotFoundException;
 import com.fitu.fitu.domain.user.repository.UserRepository;
 import com.fitu.fitu.global.util.FileValidator;
-import com.fitu.fitu.infra.ai.bodyimage.BodyImageAiClient;
+import com.fitu.fitu.infra.ai.bodyimage.AiBodyImageClient;
 import com.fitu.fitu.infra.s3.S3Uploader;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
@@ -21,10 +23,16 @@ import java.util.UUID;
 @Service
 public class UserService {
 
+    @Value("${s3.path.temp}")
+    private String S3_TEMP_PATH;
+
+    @Value("${s3.path.body-image}")
+    private String S3_BODY_IMAGE_PATH;
+
     private final UserRepository userRepository;
     private final S3Uploader s3Uploader;
     private final FileValidator fileValidator;
-    private final BodyImageAiClient bodyImageAiClient;
+    private final AiBodyImageClient aiBodyImageClient;
 
     @Transactional
     public User registerProfile(final ProfileRequest requestDto) {
@@ -32,8 +40,8 @@ public class UserService {
 
         final User user = requestDto.toEntity(userId);
 
-        if (user.getBodyImageUrl() != null) {
-            user.setBodyImageUrl(s3Uploader.copy(user.getBodyImageUrl(), "bodyImage/"));
+        if (user.getBodyImageUrl() != null && !user.getBodyImageUrl().isEmpty()) {
+            user.updateBodyImageUrl(s3Uploader.copy(user.getBodyImageUrl(), S3_BODY_IMAGE_PATH));
         }
 
         return userRepository.save(user);
@@ -43,26 +51,26 @@ public class UserService {
     public User updateProfile(final String userId, final ProfileRequest requestDto) {
         final User user = findById(userId);
 
-        user.setAge(requestDto.age());
-        user.setGender(requestDto.gender());
-        user.setHeight(requestDto.height());
-        user.setWeight(requestDto.weight());
-        user.setSkinTone(requestDto.skinTone());
+        user.updateProfile(requestDto.age(), requestDto.gender(), requestDto.height(), requestDto.weight(),
+                requestDto.skinTone());
 
         if (!Objects.equals(user.getBodyImageUrl(), requestDto.bodyImageUrl())) {
+            final String originBodyImageUrl = user.getBodyImageUrl();
+
             updateBodyImage(user, requestDto.bodyImageUrl());
+
+            deleteBodyImage(originBodyImageUrl);
         }
 
         return user;
     }
 
-    @Transactional
     public BodyImageAnalysisResponse analyzeBodyImage(final MultipartFile file) {
         fileValidator.validateImage(file);
 
-        final String s3Url = s3Uploader.upload("temp/", file);
+        final String s3Url = s3Uploader.upload(S3_TEMP_PATH, file);
 
-        final BodyImageAiResponse response = bodyImageAiClient.analyzeBodyImage(s3Url);
+        final AiBodyImageResponse response = aiBodyImageClient.analyzeBodyImage(s3Url);
 
         return new BodyImageAnalysisResponse(s3Url, response.warnings());
     }
@@ -84,10 +92,16 @@ public class UserService {
     }
 
     private void updateBodyImage(final User user, final String bodyImageUrl) {
-        if (bodyImageUrl != null) {
-            user.setBodyImageUrl(s3Uploader.copy(bodyImageUrl, "bodyImage/"));
+        if (StringUtils.hasText(bodyImageUrl)) {
+            user.updateBodyImageUrl(s3Uploader.copy(bodyImageUrl, S3_BODY_IMAGE_PATH));
         } else {
-            user.setBodyImageUrl(null);
+            user.updateBodyImageUrl(null);
+        }
+    }
+
+    private void deleteBodyImage(final String bodyImageUrl) {
+        if (StringUtils.hasText(bodyImageUrl)) {
+            s3Uploader.delete(bodyImageUrl);
         }
     }
 }

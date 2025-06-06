@@ -52,7 +52,7 @@ public class S3Uploader {
         }
     }
 
-    public void delete(final String bucket, final String s3Url) {
+    public void delete(final String s3Url) {
         try {
             final String objectKey = extractKey(s3Url);
 

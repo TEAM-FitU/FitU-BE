@@ -10,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class AiBodyImageClient {
 
-    @Value("${infra.ai.api.bodyImage}")
+    @Value("${infra.ai.api.body-image}")
     private String baseUrl;
 
     private final RestTemplate restTemplate;
