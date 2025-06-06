@@ -6,10 +6,7 @@ import com.fitu.fitu.domain.recommendation.entity.AiRecommendation;
 import com.fitu.fitu.domain.recommendation.service.AiRecommendationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RequestMapping("/recommendation")
@@ -19,8 +16,8 @@ public class AiRecommendationController {
     private final AiRecommendationService aiRecommendationService;
 
     @PostMapping
-    public AiRecommendationResponse recommendOutfit(@Valid @RequestBody final RecommendOutfitRequest requestDto) {
-        final AiRecommendation aiRecommendation = aiRecommendationService.recommendOutfit(requestDto);
+    public AiRecommendationResponse recommendOutfit(@RequestHeader("Fitu-User-UUID") final String userId, @Valid @RequestBody final RecommendOutfitRequest requestDto) {
+        final AiRecommendation aiRecommendation = aiRecommendationService.recommendOutfit(userId, requestDto);
         return new AiRecommendationResponse(aiRecommendation);
     }
 }

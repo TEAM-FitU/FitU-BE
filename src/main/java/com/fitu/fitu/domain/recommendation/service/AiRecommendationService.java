@@ -22,12 +22,12 @@ public class AiRecommendationService {
     private final AiRecommendationApiClient aiRecommendationApiClient;
 
     @Transactional
-    public AiRecommendation recommendOutfit(final RecommendOutfitRequest requestDto) {
+    public AiRecommendation recommendOutfit(final String userId, final RecommendOutfitRequest requestDto) {
         final Weather weather = weatherService.getWeather(requestDto.time(), requestDto.place());
 
-        final AiRecommendationResponse aiRecommendationResponse = aiRecommendationApiClient.getAiRecommendation("1", requestDto, weather);
+        final AiRecommendationResponse aiRecommendationResponse = aiRecommendationApiClient.getAiRecommendation(userId, requestDto, weather);
 
-        final AiRecommendation aiRecommendation = getAiRecommendation("1", aiRecommendationResponse);
+        final AiRecommendation aiRecommendation = getAiRecommendation(userId, aiRecommendationResponse);
 
         return aiRecommendationRepository.save(aiRecommendation);
     }
