@@ -15,29 +15,23 @@ public class User extends BaseEntity {
     @Id
     private String id;
 
-    @Setter
     @Column(nullable = false)
     private int age;
 
-    @Setter
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Gender gender;
 
-    @Setter
     @Column(nullable = false)
     private int height;
 
-    @Setter
     @Column(nullable = false)
     private int weight;
 
-    @Setter
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private SkinTone skinTone;
 
-    @Setter
     @Column
     private String bodyImageUrl;
 
@@ -50,6 +44,19 @@ public class User extends BaseEntity {
         this.height = height;
         this.weight = weight;
         this.skinTone = skinTone;
+        this.bodyImageUrl = bodyImageUrl;
+    }
+
+    public void updateProfile(final int age, final Gender gender, final int height, final int weight,
+                              final SkinTone skinTone) {
+        this.age = age;
+        this.gender = gender;
+        this.height = height;
+        this.weight = weight;
+        this.skinTone = skinTone;
+    }
+
+    public void updateBodyImageUrl(final String bodyImageUrl) {
         this.bodyImageUrl = bodyImageUrl;
     }
 }
