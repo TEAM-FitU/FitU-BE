@@ -4,10 +4,7 @@ import com.fitu.fitu.domain.user.entity.enums.Gender;
 import com.fitu.fitu.domain.user.entity.enums.SkinTone;
 import com.fitu.fitu.global.common.domain.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -47,6 +44,19 @@ public class User extends BaseEntity {
         this.height = height;
         this.weight = weight;
         this.skinTone = skinTone;
+        this.bodyImageUrl = bodyImageUrl;
+    }
+
+    public void updateProfile(final int age, final Gender gender, final int height, final int weight,
+                              final SkinTone skinTone) {
+        this.age = age;
+        this.gender = gender;
+        this.height = height;
+        this.weight = weight;
+        this.skinTone = skinTone;
+    }
+
+    public void updateBodyImageUrl(final String bodyImageUrl) {
         this.bodyImageUrl = bodyImageUrl;
     }
 }
