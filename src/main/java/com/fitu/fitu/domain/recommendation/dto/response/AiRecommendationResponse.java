@@ -11,12 +11,13 @@ public record AiRecommendationResponse(
 ) {
 
     public record RecommendationContent(
+            String combinationClothes,
             String text,
             String imageUrl
     ) {
 
         public RecommendationContent(final Content content) {
-            this(content.getText(), content.getImageUrl());
+            this(content.getCombinationClothes(), content.getText(), content.getImageUrl());
         }
     }
 
