@@ -6,9 +6,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -26,6 +28,8 @@ public class AiRecommendation {
 
     @Embedded
     @AttributeOverrides({
+            @AttributeOverride(name = "combinationClothes", column = @Column(name = "ai_recommendation_combination_clothes_1", columnDefinition = "LONGTEXT")),
+            @AttributeOverride(name = "selectedClothes", column = @Column(name = "ai_recommendation_selected_clothes_1", columnDefinition = "LONGTEXT")),
             @AttributeOverride(name = "text", column = @Column(name = "ai_recommendation_text_1", columnDefinition = "LONGTEXT")),
             @AttributeOverride(name = "imageUrl", column = @Column(name = "ai_recommendation_image_url_1"))
     })
@@ -33,6 +37,8 @@ public class AiRecommendation {
 
     @Embedded
     @AttributeOverrides({
+            @AttributeOverride(name = "combinationClothes", column = @Column(name = "ai_recommendation_combination_clothes_2", columnDefinition = "LONGTEXT")),
+            @AttributeOverride(name = "selectedClothes", column = @Column(name = "ai_recommendation_selected_clothes_2", columnDefinition = "LONGTEXT")),
             @AttributeOverride(name = "text", column = @Column(name = "ai_recommendation_text_2", columnDefinition = "LONGTEXT")),
             @AttributeOverride(name = "imageUrl", column = @Column(name = "ai_recommendation_image_url_2"))
     })
@@ -40,6 +46,8 @@ public class AiRecommendation {
 
     @Embedded
     @AttributeOverrides({
+            @AttributeOverride(name = "combinationClothes", column = @Column(name = "ai_recommendation_combination_clothes_3", columnDefinition = "LONGTEXT")),
+            @AttributeOverride(name = "selectedClothes", column = @Column(name = "ai_recommendation_selected_clothes_3", columnDefinition = "LONGTEXT")),
             @AttributeOverride(name = "text", column = @Column(name = "ai_recommendation_text_3", columnDefinition = "LONGTEXT")),
             @AttributeOverride(name = "imageUrl", column = @Column(name = "ai_recommendation_image_url_3"))
     })
