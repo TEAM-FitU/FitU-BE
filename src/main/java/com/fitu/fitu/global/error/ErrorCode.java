@@ -11,7 +11,7 @@ public enum ErrorCode {
     ENTITY_NOT_FOUND(400, "COMMON003", "Entity Not Found"),
 
     /* USER ERROR */
-    USER_NOT_FOUND(400, "USER003", "User Not Found"),
+    USER_NOT_FOUND(400, "USER001", "User Not Found"),
 
     /* CLOTHES ERROR */
 
