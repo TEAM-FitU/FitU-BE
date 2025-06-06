@@ -11,6 +11,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class AiRecommendationService {
@@ -25,21 +27,21 @@ public class AiRecommendationService {
 
         final AiRecommendationResponse aiRecommendationResponse = aiRecommendationApiClient.getAiRecommendation("1", requestDto, weather);
 
-        final AiRecommendation aiRecommendation = getAiRecommendation();
+        final AiRecommendation aiRecommendation = getAiRecommendation("1", aiRecommendationResponse);
 
-        aiRecommendationRepository.save(aiRecommendation);
-
-        return aiRecommendation;
+        return aiRecommendationRepository.save(aiRecommendation);
     }
 
-    // Mock 함수
-    private AiRecommendation getAiRecommendation() {
+    private AiRecommendation getAiRecommendation(final String userId, final AiRecommendationResponse aiRecommendationResponse) {
+        final AiRecommendationResponse.Body body = aiRecommendationResponse.getBody();
+        final List<AiRecommendationResponse.RecommendationItem> result = body.getResult();
+
         return AiRecommendation.builder()
-                .userId("1")
-                .summary("summary")
-                .content1(new Content("text", "imageUrl"))
-                .content2(new Content("text", "imageUrl"))
-                .content3(new Content("text", "imageUrl"))
+                .userId(userId)
+                .summary(body.getSummary())
+                .content1(new Content(result.getFirst().getCombination(), result.getFirst().getSelected(), result.getFirst().getReason(), result.getFirst().getVirtualTryonImage()))
+                .content2(new Content(result.get(1).getCombination(), result.get(1).getSelected(), result.get(1).getReason(), result.get(1).getVirtualTryonImage()))
+                .content3(new Content(result.getLast().getCombination(), result.getLast().getSelected(), result.getLast().getReason(), result.getLast().getVirtualTryonImage()))
                 .build();
     }
 }
