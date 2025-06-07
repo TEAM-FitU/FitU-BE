@@ -11,22 +11,22 @@ public record AiRecommendationResponse(
 ) {
 
     public record RecommendationContent(
-            String combinationClothes,
-            String text,
+            String clothesCombination,
+            String description,
             String imageUrl
     ) {
 
-        public RecommendationContent(final Content content) {
-            this(content.getCombinationClothes(), content.getText(), content.getImageUrl());
+        public static RecommendationContent of(final Content content) {
+            return new RecommendationContent(content.getClothesCombination(), content.getDescription(), content.getImageUrl());
         }
     }
 
-    public AiRecommendationResponse(final AiRecommendation aiRecommendation) {
-        this(aiRecommendation.getSummary(),
+    public static AiRecommendationResponse of(final AiRecommendation aiRecommendation) {
+        return new AiRecommendationResponse(aiRecommendation.getSummary(),
              List.of(
-                     new RecommendationContent(aiRecommendation.getContent1()),
-                     new RecommendationContent(aiRecommendation.getContent2()),
-                     new RecommendationContent(aiRecommendation.getContent3())
+                     RecommendationContent.of(aiRecommendation.getContent1()),
+                     RecommendationContent.of(aiRecommendation.getContent2()),
+                     RecommendationContent.of(aiRecommendation.getContent3())
              )
         );
     }
