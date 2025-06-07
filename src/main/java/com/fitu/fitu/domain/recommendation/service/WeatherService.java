@@ -30,8 +30,8 @@ public class WeatherService {
 
     private static final double DEFAULT_LONGITUDE = 126.978652258823; // 서울특별시청 경도
     private static final double DEFAULT_LATITUDE = 37.56682420267543; // 서울특별시청 위도
+    private static final String DEFAULT_ADDRESS = "서울 중구 태평로1가 31";
 
-    private static final String SUCCESS_RESULT_CODE = "00";
     private static final String DEFAULT_FCST_TIME = "1200";
     private static final String MIN_TEMPERATURE_CODE = "TMN";
     private static final String MAX_TEMPERATURE_CODE = "TMX";
@@ -174,7 +174,14 @@ public class WeatherService {
     private RegId getRegIdForMidtermWeather(final String targetPlace) {
         final GeocodingResponse geocodingResponse = geocodingApiClient.getCoordinateAndAddress(targetPlace);
 
-        final String address = geocodingResponse.getDocuments().getFirst().getAddress_name();
+        final List<GeocodingResponse.Document> documents = geocodingResponse.getDocuments();
+
+        String address = DEFAULT_ADDRESS;
+
+        if (!documents.isEmpty()) {
+            address = geocodingResponse.getDocuments().getFirst().getAddress_name();
+        }
+
         final String city = address.split(" ")[0];
 
         return MidtermWeatherRegIdMapper.map(city);
