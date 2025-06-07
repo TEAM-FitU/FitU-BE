@@ -13,22 +13,22 @@ import lombok.NoArgsConstructor;
 public class Content {
 
     @Column(nullable = false, columnDefinition = "LONGTEXT")
-    private String combinationClothes;
+    private String clothesCombination;
 
     @Column(nullable = false, columnDefinition = "LONGTEXT")
     private String selectedClothes;
 
     @Column(nullable = false, columnDefinition = "LONGTEXT")
-    private String text;
+    private String description;
 
     @Column
     private String imageUrl;
 
     @Builder
-    public Content(final String combinationClothes, final String selectedClothes, final String text, final String imageUrl) {
-        this.combinationClothes = combinationClothes;
+    public Content(final String clothesCombination, final String selectedClothes, final String description, final String imageUrl) {
+        this.clothesCombination = clothesCombination;
         this.selectedClothes = selectedClothes;
-        this.text = text;
+        this.description = description;
         this.imageUrl = imageUrl;
     }
 }

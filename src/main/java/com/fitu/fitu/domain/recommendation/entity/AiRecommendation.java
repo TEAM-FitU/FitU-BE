@@ -28,28 +28,28 @@ public class AiRecommendation {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "combinationClothes", column = @Column(name = "ai_recommendation_combination_clothes_1", columnDefinition = "LONGTEXT")),
-            @AttributeOverride(name = "selectedClothes", column = @Column(name = "ai_recommendation_selected_clothes_1", columnDefinition = "LONGTEXT")),
-            @AttributeOverride(name = "text", column = @Column(name = "ai_recommendation_text_1", columnDefinition = "LONGTEXT")),
-            @AttributeOverride(name = "imageUrl", column = @Column(name = "ai_recommendation_image_url_1"))
+            @AttributeOverride(name = "clothesCombination", column = @Column(name = "clothes_combination_1", columnDefinition = "LONGTEXT")),
+            @AttributeOverride(name = "selectedClothes", column = @Column(name = "selected_clothes_1", columnDefinition = "LONGTEXT")),
+            @AttributeOverride(name = "description", column = @Column(name = "description_1", columnDefinition = "LONGTEXT")),
+            @AttributeOverride(name = "imageUrl", column = @Column(name = "image_url_1"))
     })
     private Content content1;
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "combinationClothes", column = @Column(name = "ai_recommendation_combination_clothes_2", columnDefinition = "LONGTEXT")),
-            @AttributeOverride(name = "selectedClothes", column = @Column(name = "ai_recommendation_selected_clothes_2", columnDefinition = "LONGTEXT")),
-            @AttributeOverride(name = "text", column = @Column(name = "ai_recommendation_text_2", columnDefinition = "LONGTEXT")),
-            @AttributeOverride(name = "imageUrl", column = @Column(name = "ai_recommendation_image_url_2"))
+            @AttributeOverride(name = "clothesCombination", column = @Column(name = "clothes_combination_2", columnDefinition = "LONGTEXT")),
+            @AttributeOverride(name = "selectedClothes", column = @Column(name = "selected_clothes_2", columnDefinition = "LONGTEXT")),
+            @AttributeOverride(name = "description", column = @Column(name = "description_2", columnDefinition = "LONGTEXT")),
+            @AttributeOverride(name = "imageUrl", column = @Column(name = "image_url_2"))
     })
     private Content content2;
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "combinationClothes", column = @Column(name = "ai_recommendation_combination_clothes_3", columnDefinition = "LONGTEXT")),
-            @AttributeOverride(name = "selectedClothes", column = @Column(name = "ai_recommendation_selected_clothes_3", columnDefinition = "LONGTEXT")),
-            @AttributeOverride(name = "text", column = @Column(name = "ai_recommendation_text_3", columnDefinition = "LONGTEXT")),
-            @AttributeOverride(name = "imageUrl", column = @Column(name = "ai_recommendation_image_url_3"))
+            @AttributeOverride(name = "clothesCombination", column = @Column(name = "clothes_combination_3", columnDefinition = "LONGTEXT")),
+            @AttributeOverride(name = "selectedClothes", column = @Column(name = "selected_clothes_3", columnDefinition = "LONGTEXT")),
+            @AttributeOverride(name = "description", column = @Column(name = "description_3", columnDefinition = "LONGTEXT")),
+            @AttributeOverride(name = "imageUrl", column = @Column(name = "image_url_3"))
     })
     private Content content3;
 
@@ -58,8 +58,7 @@ public class AiRecommendation {
     private LocalDateTime createdAt;
 
     @Builder
-    public AiRecommendation(final String userId, final String summary,
-                            final Content content1, final Content content2, final Content content3) {
+    public AiRecommendation(final String userId, final String summary, final Content content1, final Content content2, final Content content3) {
         this.userId = userId;
         this.summary = summary;
         this.content1 = content1;
