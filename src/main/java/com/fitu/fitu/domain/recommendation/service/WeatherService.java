@@ -38,8 +38,10 @@ public class WeatherService {
     private static final String HOUR_TEMPERATURE_CODE = "TMP";
     private static final String RAIN_PERCENT_CODE = "POP";
     private static final String WEATHER_CONDITION_CODE = "SKY";
+    private static final int DEFAULT_TEMPERATURE = 13;
     private static final int DEFAULT_RAIN_PERCENT = 0;
     private static final String DEFAULT_WEATHER_CONDITION = "0";
+    private static final String DEFAULT_WEATHER_CONDITION_STRING = "맑음";
 
     public Weather getWeather(final LocalDate targetTime, final String targetPlace) {
         final LocalDate now = LocalDate.now();
@@ -138,7 +140,7 @@ public class WeatherService {
             case 10 -> 15;
             case 11 -> 7;
             case 12 -> 0;
-            default -> Integer.MIN_VALUE;
+            default -> DEFAULT_TEMPERATURE;
         };
     }
 
@@ -209,7 +211,7 @@ public class WeatherService {
             case 8 -> new Temperature(item.getTaMin8(), item.getTaMax8());
             case 9 -> new Temperature(item.getTaMin9(), item.getTaMax9());
             case 10 -> new Temperature(item.getTaMin10(), item.getTaMax10());
-            default -> new Temperature(0, 0);
+            default -> new Temperature(DEFAULT_TEMPERATURE, DEFAULT_TEMPERATURE);
         };
     }
 
@@ -222,7 +224,7 @@ public class WeatherService {
             case 8 -> item.getRnSt8();
             case 9 -> item.getRnSt9();
             case 10 -> item.getRnSt10();
-            default -> 0;
+            default -> DEFAULT_RAIN_PERCENT;
         };
     }
 
@@ -235,7 +237,7 @@ public class WeatherService {
             case 8 -> item.getWf8();
             case 9 -> item.getWf9();
             case 10 -> item.getWf10();
-            default -> "알 수 없음";
+            default -> DEFAULT_WEATHER_CONDITION_STRING;
         };
     }
 
