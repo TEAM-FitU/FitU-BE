@@ -27,14 +27,25 @@ public class WeatherService {
     private final MidtermWeatherApiClient midtermWeatherApiClient;
 
     private static final int SHORT_TERM_THRESHOLD_DAYS = 4;
+
     private static final double DEFAULT_LONGITUDE = 126.978652258823; // 서울특별시청 경도
     private static final double DEFAULT_LATITUDE = 37.56682420267543; // 서울특별시청 위도
+
+    private static final String SUCCESS_RESULT_CODE = "00";
+    private static final String DEFAULT_FCST_TIME = "1200";
+    private static final String MIN_TEMPERATURE_CODE = "TMN";
+    private static final String MAX_TEMPERATURE_CODE = "TMX";
+    private static final String HOUR_TEMPERATURE_CODE = "TMP";
+    private static final String RAIN_PERCENT_CODE = "POP";
+    private static final String WEATHER_CONDITION_CODE = "SKY";
+    private static final int DEFAULT_RAIN_PERCENT = 0;
+    private static final String DEFAULT_WEATHER_CONDITION = "0";
 
     public Weather getWeather(final LocalDate targetTime, final String targetPlace) {
         final LocalDate now = LocalDate.now();
 
         return (isShortTerm(now, targetTime))
-                ? getShortTermWeather(targetTime, targetPlace)
+                ? getShortTermWeather(now, targetTime, targetPlace)
                 : getMidtermWeather(now, targetTime, targetPlace);
     }
 
@@ -42,12 +53,12 @@ public class WeatherService {
         return ChronoUnit.DAYS.between(now, targetTime) <= SHORT_TERM_THRESHOLD_DAYS;
     }
 
-    private Weather getShortTermWeather(final LocalDate targetTime, final String targetPlace) {
+    private Weather getShortTermWeather(final LocalDate now, final LocalDate targetTime, final String targetPlace) {
         final Grid grid = getGridForShortTermWeather(targetPlace);
 
         final ShortTermWeatherResponse weatherResponse = shortTermWeatherApiClient.getWeather(grid.nx(), grid.ny());
 
-        return parseShortTermWeatherResponse(targetTime, weatherResponse);
+        return parseShortTermWeatherResponse(now, targetTime, weatherResponse);
     }
 
     private Grid getGridForShortTermWeather(final String targetPlace) {
@@ -66,7 +77,7 @@ public class WeatherService {
         return ShortTermWeatherGridConverter.convert(lat, lon);
     }
 
-    private Weather parseShortTermWeatherResponse(final LocalDate targetTime, final ShortTermWeatherResponse weatherResponse) {
+    private Weather parseShortTermWeatherResponse(final LocalDate now, final LocalDate targetTime, final ShortTermWeatherResponse weatherResponse) {
         final String targetTimeStr = targetTime.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
         final List<ShortTermWeatherResponse.Item> items = weatherResponse.getResponse().getBody().getItems().getItem();
@@ -74,18 +85,33 @@ public class WeatherService {
                 .filter(item -> item.getFcstDate().equals(targetTimeStr))
                 .toList();
 
-        final int minTemperature = parseTemperatureFieldForShortTermWeather(filteredItems, "TMN", Integer.MIN_VALUE);
-        final int maxTemperature = parseTemperatureFieldForShortTermWeather(filteredItems, "TMX", Integer.MIN_VALUE);
-
         final Map<String, String> noonItem = filteredItems.stream()
-                .filter(item -> "1200".equals(item.getFcstTime()))
+                .filter(item -> DEFAULT_FCST_TIME.equals(item.getFcstTime()))
                 .collect(Collectors.toMap(ShortTermWeatherResponse.Item::getCategory, ShortTermWeatherResponse.Item::getFcstValue, (oldValue, newValue) -> newValue));
 
-        final Temperature temperature = getFinalTemperature(minTemperature, maxTemperature, noonItem, filteredItems);
+        final Temperature temperature = getTemperature(now, filteredItems, noonItem);
         final int rainPercent = parseRainPercentFieldForShortTermWeather(noonItem);
         final String weatherCondition = parseWeatherConditionFieldForShortTermWeather(noonItem);
 
         return new Weather(temperature.minTemperature, temperature.maxTemperature, rainPercent, weatherCondition);
+    }
+
+    private Temperature getTemperature(final LocalDate now, final List<ShortTermWeatherResponse.Item> filteredItems, final Map<String, String> noonItem) {
+        int minTemperature = parseTemperatureFieldForShortTermWeather(filteredItems, MIN_TEMPERATURE_CODE, getDefaultTemperature(now));
+        int maxTemperature = parseTemperatureFieldForShortTermWeather(filteredItems, MAX_TEMPERATURE_CODE, getDefaultTemperature(now));
+
+        if (minTemperature != Integer.MIN_VALUE && maxTemperature != Integer.MIN_VALUE) {
+            return new Temperature(minTemperature, maxTemperature);
+        }
+
+        int noonTemperature = Optional.ofNullable(noonItem.get(HOUR_TEMPERATURE_CODE))
+                .map(Integer::parseInt)
+                .orElse(getDefaultTemperature(now));
+
+        minTemperature = noonTemperature;
+        maxTemperature = noonTemperature;
+
+        return new Temperature(minTemperature, maxTemperature);
     }
 
     private int parseTemperatureFieldForShortTermWeather(final List<ShortTermWeatherResponse.Item> filteredItems, final String category, final int orElseValue) {
@@ -96,46 +122,43 @@ public class WeatherService {
                 .orElse(orElseValue);
     }
 
-    private Temperature getFinalTemperature(final int initMinTemperature, final int initMaxTemperature, final Map<String, String> noonItem, final List<ShortTermWeatherResponse.Item> filteredItems) {
-        if (isValuableTemperature(initMinTemperature) && isValuableTemperature(initMaxTemperature)) {
-            return new Temperature(initMinTemperature, initMaxTemperature);
-        }
+    private int getDefaultTemperature(final LocalDate now) {
+        final int nowMonth = now.getMonthValue();
 
-        int noonTemperature = Optional.ofNullable(noonItem.get("TMP"))
-                .map(Integer::parseInt)
-                .orElse(Integer.MIN_VALUE);
-
-        if (isValuableTemperature(noonTemperature)) {
-            return new Temperature(noonTemperature, noonTemperature);
-        }
-
-        int defaultTemperature = parseTemperatureFieldForShortTermWeather(filteredItems, "TMP", 0);
-
-        return new Temperature(defaultTemperature, defaultTemperature);
-    }
-
-    private boolean isValuableTemperature(final int temperature) {
-        return temperature != Integer.MIN_VALUE;
+        return switch(nowMonth) {
+            case 1 -> -2;
+            case 2 -> 0;
+            case 3 -> 6;
+            case 4 -> 12;
+            case 5 -> 18;
+            case 6 -> 22;
+            case 7 -> 25;
+            case 8 -> 26;
+            case 9 -> 21;
+            case 10 -> 15;
+            case 11 -> 7;
+            case 12 -> 0;
+            default -> Integer.MIN_VALUE;
+        };
     }
 
     private int parseRainPercentFieldForShortTermWeather(final Map<String, String> noonItem) {
-        return Optional.ofNullable(noonItem.get("POP"))
+        return Optional.ofNullable(noonItem.get(RAIN_PERCENT_CODE))
                 .map(Integer::parseInt)
-                .orElse(0);
+                .orElse(DEFAULT_RAIN_PERCENT);
     }
 
     private String parseWeatherConditionFieldForShortTermWeather(final Map<String, String> noonItem) {
-        return Optional.ofNullable(noonItem.get("SKY"))
-                .map(this::mapSkyCodeToCondition)
-                .orElse("알 수 없음");
+        return Optional.ofNullable(noonItem.get(WEATHER_CONDITION_CODE))
+                .map(this::mapWeatherConditionCodeToString)
+                .orElse(DEFAULT_WEATHER_CONDITION);
     }
 
-    private String mapSkyCodeToCondition(final String skyCode) {
+    private String mapWeatherConditionCodeToString(final String skyCode) {
         return switch(skyCode) {
-            case "1", "2", "3", "4", "5" -> "맑음";
             case "6", "7", "8" -> "구름 많음";
             case "9", "10" -> "흐림";
-            default -> "알 수 없음";
+            default -> "맑음";
         };
     }
 
