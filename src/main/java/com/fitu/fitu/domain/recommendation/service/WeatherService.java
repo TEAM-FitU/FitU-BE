@@ -22,11 +22,13 @@ import java.util.stream.Collectors;
 @Service
 public class WeatherService {
 
+    private final GeocodingApiClient geocodingApiClient;
     private final ShortTermWeatherApiClient shortTermWeatherApiClient;
     private final MidtermWeatherApiClient midtermWeatherApiClient;
-    private final GeocodingApiClient geocodingApiClient;
 
     private static final int SHORT_TERM_THRESHOLD_DAYS = 4;
+    private static final double DEFAULT_LONGITUDE = 126.978652258823; // 서울특별시청 경도
+    private static final double DEFAULT_LATITUDE = 37.56682420267543; // 서울특별시청 위도
 
     public Weather getWeather(final LocalDate targetTime, final String targetPlace) {
         final LocalDate now = LocalDate.now();
@@ -51,8 +53,15 @@ public class WeatherService {
     private Grid getGridForShortTermWeather(final String targetPlace) {
         final GeocodingResponse geocodingResponse = geocodingApiClient.getCoordinateAndAddress(targetPlace);
 
-        final int lon = (int) Double.parseDouble(geocodingResponse.getDocuments().getFirst().getX());
-        final int lat = (int) Double.parseDouble(geocodingResponse.getDocuments().getFirst().getY());
+        final List<GeocodingResponse.Document> documents = geocodingResponse.getDocuments();
+
+        double lon = DEFAULT_LONGITUDE;
+        double lat = DEFAULT_LATITUDE;
+
+        if (!documents.isEmpty()) {
+            lon = Double.parseDouble(geocodingResponse.getDocuments().getFirst().getX());
+            lat = Double.parseDouble(geocodingResponse.getDocuments().getFirst().getY());
+        }
 
         return ShortTermWeatherGridConverter.convert(lat, lon);
     }
