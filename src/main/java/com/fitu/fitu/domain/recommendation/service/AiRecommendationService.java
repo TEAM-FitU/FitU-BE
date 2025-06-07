@@ -17,8 +17,8 @@ import java.util.List;
 @Service
 public class AiRecommendationService {
 
-    private final AiRecommendationRepository aiRecommendationRepository;
     private final WeatherService weatherService;
+    private final AiRecommendationRepository aiRecommendationRepository;
     private final AiRecommendationApiClient aiRecommendationApiClient;
 
     @Transactional

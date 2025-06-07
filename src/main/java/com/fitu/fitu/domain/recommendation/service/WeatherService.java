@@ -26,6 +26,8 @@ public class WeatherService {
     private final MidtermWeatherApiClient midtermWeatherApiClient;
     private final GeocodingApiClient geocodingApiClient;
 
+    private static final int SHORT_TERM_THRESHOLD_DAYS = 4;
+
     public Weather getWeather(final LocalDate targetTime, final String targetPlace) {
         final LocalDate now = LocalDate.now();
 
@@ -35,7 +37,7 @@ public class WeatherService {
     }
 
     private boolean isShortTerm(final LocalDate now, final LocalDate targetTime) {
-        return ChronoUnit.DAYS.between(now, targetTime) <= 4;
+        return ChronoUnit.DAYS.between(now, targetTime) <= SHORT_TERM_THRESHOLD_DAYS;
     }
 
     private Weather getShortTermWeather(final LocalDate targetTime, final String targetPlace) {
