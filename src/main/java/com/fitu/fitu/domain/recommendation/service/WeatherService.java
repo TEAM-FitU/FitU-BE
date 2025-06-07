@@ -66,10 +66,14 @@ public class WeatherService {
     private Grid getGridForShortTermWeather(final String targetPlace) {
         final GeocodingResponse geocodingResponse = geocodingApiClient.getCoordinateAndAddress(targetPlace);
 
-        final List<GeocodingResponse.Document> documents = geocodingResponse.getDocuments();
-
         double lon = DEFAULT_LONGITUDE;
         double lat = DEFAULT_LATITUDE;
+
+        if (geocodingResponse == null) {
+            return ShortTermWeatherGridConverter.convert(lat, lon);
+        }
+
+        final List<GeocodingResponse.Document> documents = geocodingResponse.getDocuments();
 
         if (!documents.isEmpty()) {
             lon = Double.parseDouble(geocodingResponse.getDocuments().getFirst().getX());
@@ -81,6 +85,10 @@ public class WeatherService {
 
     private Weather parseShortTermWeatherResponse(final LocalDate now, final LocalDate targetTime, final ShortTermWeatherResponse weatherResponse) {
         final String targetTimeStr = targetTime.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+
+        if (weatherResponse == null) {
+            return new Weather(getDefaultTemperature(now), getDefaultTemperature(now), DEFAULT_RAIN_PERCENT, DEFAULT_WEATHER_CONDITION_STRING);
+        }
 
         final List<ShortTermWeatherResponse.Item> items = weatherResponse.getResponse().getBody().getItems().getItem();
         final List<ShortTermWeatherResponse.Item> filteredItems = items.stream()
@@ -176,9 +184,13 @@ public class WeatherService {
     private RegId getRegIdForMidtermWeather(final String targetPlace) {
         final GeocodingResponse geocodingResponse = geocodingApiClient.getCoordinateAndAddress(targetPlace);
 
-        final List<GeocodingResponse.Document> documents = geocodingResponse.getDocuments();
-
         String address = DEFAULT_ADDRESS;
+
+        if (geocodingResponse == null) {
+            return MidtermWeatherRegIdMapper.map(address.split(" ")[0]);
+        }
+
+        final List<GeocodingResponse.Document> documents = geocodingResponse.getDocuments();
 
         if (!documents.isEmpty()) {
             address = geocodingResponse.getDocuments().getFirst().getAddress_name();
@@ -190,6 +202,10 @@ public class WeatherService {
     }
 
     private Weather parseMidtermWeatherResponse(final LocalDate now, final LocalDate targetTime, final MidtermTemperatureResponse temperatureResponse, final MidtermWeatherConditionResponse weatherConditionResponse) {
+        if (temperatureResponse == null || weatherConditionResponse == null) {
+            return new Weather(getDefaultTemperature(now), getDefaultTemperature(now), DEFAULT_RAIN_PERCENT, DEFAULT_WEATHER_CONDITION_STRING);
+        }
+
         final int dayDiff = (int) ChronoUnit.DAYS.between(now, targetTime);
 
         final MidtermTemperatureResponse.Item temperatureItems = temperatureResponse.getResponse().getBody().getItems().getItem().getFirst();
