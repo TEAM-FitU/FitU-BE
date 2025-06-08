@@ -23,7 +23,7 @@ public class AiRecommendationRequest {
     public AiRecommendationRequest(final String userId, final RecommendOutfitRequest recommendOutfitRequest, final Weather weather) {
         this.userId = userId;
         this.situation = recommendOutfitRequest.situation();
-        this.targetTime = recommendOutfitRequest.time().toString();
+        this.targetTime = recommendOutfitRequest.date().toString();
         this.targetPlace = recommendOutfitRequest.place();
         this.highTemperature = weather.maxTemperature();
         this.lowTemperature = weather.minTemperature();

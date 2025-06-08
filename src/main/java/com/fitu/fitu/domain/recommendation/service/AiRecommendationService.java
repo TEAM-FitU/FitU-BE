@@ -31,7 +31,7 @@ public class AiRecommendationService {
 
     @Transactional
     public AiRecommendation recommendOutfit(final String userId, final RecommendOutfitRequest requestDto) {
-        final Weather weather = weatherService.getWeather(requestDto.time(), requestDto.place());
+        final Weather weather = weatherService.getWeather(requestDto.date(), requestDto.place());
 
         final AiRecommendationResponse aiRecommendationResponse = aiRecommendationApiClient.getAiRecommendation(userId, requestDto, weather);
 

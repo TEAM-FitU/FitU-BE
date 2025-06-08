@@ -11,10 +11,10 @@ public record RecommendOutfitRequest(
         String situation,
         @NotNull
         @ValidDateRange(range = 10)
-        LocalDate time,
+        LocalDate date,
         @NotBlank
         String place,
         @NotNull
-        boolean useOnlyClosetItems
+        Boolean useOnlyClosetItems
 ) {
 }
