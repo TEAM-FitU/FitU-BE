@@ -1,7 +1,9 @@
 package com.fitu.fitu.infra.ai.recommendation;
 
 import com.fitu.fitu.domain.recommendation.dto.request.RecommendOutfitRequest;
+import com.fitu.fitu.domain.recommendation.exception.AiRecommendationServerException;
 import com.fitu.fitu.domain.recommendation.service.WeatherService.Weather;
+import com.fitu.fitu.global.error.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -20,8 +22,11 @@ public class AiRecommendationApiClient {
         final AiRecommendationRequest requestBody = getRequestBody(userId, recommendOutfitRequest, weather);
         final HttpEntity<AiRecommendationRequest> requestHttpEntity = new HttpEntity<>(requestBody);
 
-        return restTemplate.exchange(BASE_URL, HttpMethod.POST, requestHttpEntity, AiRecommendationResponse.class)
-                .getBody();
+        try {
+            return restTemplate.exchange(BASE_URL, HttpMethod.POST, requestHttpEntity, AiRecommendationResponse.class).getBody();
+        } catch (Exception e) {
+            throw new AiRecommendationServerException(ErrorCode.AI_RECOMMENDATION_SERVER_ERROR);
+        }
     }
 
     private AiRecommendationRequest getRequestBody(final String userId, final RecommendOutfitRequest recommendOutfitRequest, final Weather weather) {

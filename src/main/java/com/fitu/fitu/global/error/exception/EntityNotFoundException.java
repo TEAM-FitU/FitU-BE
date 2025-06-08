@@ -8,6 +8,10 @@ public class EntityNotFoundException extends BusinessException {
         super(message, ErrorCode.ENTITY_NOT_FOUND);
     }
 
+    public EntityNotFoundException(final ErrorCode errorCode) {
+        super(errorCode.getMessage(), errorCode);
+    }
+
     public EntityNotFoundException(final String message, final ErrorCode errorCode) {
         super(message, errorCode);
     }
