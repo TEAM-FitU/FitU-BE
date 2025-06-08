@@ -15,7 +15,7 @@ public class BaseDateTimeGenerator {
     }
 
     public static String generateBaseDateTimeForMidTerm(final LocalDateTime now) {
-        BaseDateTime baseDateTime = getBaseDateTime(MIDTERM_BASE_HOURS, now);
+        final BaseDateTime baseDateTime = getBaseDateTime(MIDTERM_BASE_HOURS, now);
 
         return baseDateTime.baseDate + baseDateTime.baseTime;
     }
@@ -23,7 +23,7 @@ public class BaseDateTimeGenerator {
     private static BaseDateTime getBaseDateTime(final List<Integer> baseHours, LocalDateTime now) {
         now = now.minusMinutes(MINUTE_OFFSET);
 
-        int nowHour = now.getHour();
+        final int nowHour = now.getHour();
         int baseHour;
 
         if (nowHour < baseHours.getFirst()) {

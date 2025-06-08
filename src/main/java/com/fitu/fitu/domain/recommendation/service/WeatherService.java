@@ -218,7 +218,7 @@ public class WeatherService {
         return new Weather(temperature.minTemperature, temperature.maxTemperature, rainPercent, weatherCondition);
     }
 
-    private Temperature parseTemperatureFieldForMidtermWeather(final MidtermTemperatureResponse.Item item, int dayDiff) {
+    private Temperature parseTemperatureFieldForMidtermWeather(final MidtermTemperatureResponse.Item item, final int dayDiff) {
         return switch(dayDiff) {
             case 4 -> new Temperature(item.getTaMin4(), item.getTaMax4());
             case 5 -> new Temperature(item.getTaMin5(), item.getTaMax5());
@@ -231,7 +231,7 @@ public class WeatherService {
         };
     }
 
-    private int parseRainPercentFieldForMidtermWeather(final MidtermWeatherConditionResponse.Item item, int dayDiff) {
+    private int parseRainPercentFieldForMidtermWeather(final MidtermWeatherConditionResponse.Item item, final int dayDiff) {
         return switch(dayDiff) {
             case 4 -> item.getRnSt4Pm();
             case 5 -> item.getRnSt5Pm();
