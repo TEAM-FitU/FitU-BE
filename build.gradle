@@ -50,10 +50,6 @@ dependencies {
         'jakarta.annotation:jakarta.annotation-api'
     )
 
-	/* aws s3 */
-	implementation platform('software.amazon.awssdk:bom:2.31.50')
-	implementation 'software.amazon.awssdk:s3'
-
 	/* dotenv */
 	implementation("me.paulschwarz:spring-dotenv:4.0.0")
 	

@@ -3,7 +3,6 @@ package com.fitu.fitu.infra.s3;
 import java.io.IOException;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetUrlRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
@@ -24,17 +24,13 @@ import software.amazon.awssdk.services.s3.model.S3Exception;
 @Service
 public class ClothesS3Service {
 
-    @Qualifier("clothesS3Client")
     private final S3Client s3Client;
 
-    @Value("${team3.aws.s3.bucket}")
+    @Value("${team3.s3.bucket}")
     private String bucketName;
 
-    @Value("${team3.aws.s3.temp-bucket}")
+    @Value("${team3.s3.temp-bucket}")
     private String tempBucketName;
-
-    @Value("${team3.aws.region}")
-    private String region;
 
     public String uploadFile(final MultipartFile file, final String directory) {
 
@@ -56,9 +52,7 @@ public class ClothesS3Service {
                     software.amazon.awssdk.core.sync.RequestBody.fromInputStream(
                             file.getInputStream(), file.getSize()));
 
-            final String fileUrl = String.format("https://%s.s3.%s.amazonaws.com/%s",
-                    bucketName, region, fileName);
-
+            final String fileUrl = getFileUrl(bucketName, fileName);
             return fileUrl;
 
         } catch (S3Exception e) {
@@ -95,9 +89,7 @@ public class ClothesS3Service {
 
             s3Client.copyObject(copyObjectRequest);
 
-            final String newFileUrl = String.format("https://%s.s3.%s.amazonaws.com/%s",
-                    bucketName, region, targetKey);
-
+            final String newFileUrl = getFileUrl(bucketName, targetKey);
             return newFileUrl;
 
         } catch (S3Exception e) {
@@ -159,6 +151,19 @@ public class ClothesS3Service {
             throw new BusinessException(ErrorCode.S3_URL_INVALID);
         } catch (Exception e) {
             log.error("S3 URL에서 파일 키 추출 실패 - 오류: {}", e.getMessage(), e);
+            throw e;
+        }
+    }
+
+    private String getFileUrl(final String bucket, final String key) {
+        try {
+            final GetUrlRequest request = GetUrlRequest.builder()
+                    .bucket(bucket)
+                    .key(key)
+                    .build();
+            return s3Client.utilities().getUrl(request).toString();
+        } catch (Exception e) {
+            log.error("S3 URL 생성 실패 - 버킷: {}, 키: {}", bucket, key, e);
             throw e;
         }
     }
