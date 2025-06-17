@@ -61,9 +61,10 @@ public class AiRecommendation {
     private LocalDateTime createdAt;
 
     @Builder
-    public AiRecommendation(final String userId, final String summary, final Content content1, final Content content2, final Content content3) {
+    public AiRecommendation(final String userId, final String summary, final String weather, final Content content1, final Content content2, final Content content3) {
         this.userId = userId;
         this.summary = summary;
+        this.weather = weather;
         this.content1 = content1;
         this.content2 = content2;
         this.content3 = content3;
