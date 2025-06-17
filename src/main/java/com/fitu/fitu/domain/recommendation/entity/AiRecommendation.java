@@ -26,6 +26,9 @@ public class AiRecommendation {
     @Column(nullable = false)
     private String summary;
 
+    @Column(nullable = false)
+    private String weather;
+
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "clothesCombination", column = @Column(name = "clothes_combination_1", columnDefinition = "LONGTEXT")),
