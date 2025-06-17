@@ -23,13 +23,13 @@ public record AiRecommendationResponse(
         }
     }
 
-    public static AiRecommendationResponse of(final AiRecommendation aiRecommendation, final List<String> clothesImageUrls) {
+    public static AiRecommendationResponse of(final AiRecommendation aiRecommendation, final List<List<String>> clothesImageUrls) {
         return new AiRecommendationResponse(aiRecommendation.getSummary(),
              aiRecommendation.getWeather(),
              List.of(
-                     RecommendationContent.of(aiRecommendation.getContent1(), clothesImageUrls),
-                     RecommendationContent.of(aiRecommendation.getContent2(), clothesImageUrls),
-                     RecommendationContent.of(aiRecommendation.getContent3(), clothesImageUrls)
+                     RecommendationContent.of(aiRecommendation.getContent1(), clothesImageUrls.getFirst()),
+                     RecommendationContent.of(aiRecommendation.getContent2(), clothesImageUrls.get(1)),
+                     RecommendationContent.of(aiRecommendation.getContent3(), clothesImageUrls.getLast())
              )
         );
     }

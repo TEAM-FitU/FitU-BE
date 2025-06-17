@@ -17,8 +17,6 @@ public class AiRecommendationController {
 
     @PostMapping
     public AiRecommendationResponse recommendOutfit(@RequestHeader("Fitu-User-UUID") final String userId, @Valid @RequestBody final RecommendOutfitRequest requestDto) {
-        final AiRecommendation aiRecommendation = aiRecommendationService.recommendOutfit(userId, requestDto);
-
-        return AiRecommendationResponse.of(aiRecommendation);
+        return aiRecommendationService.recommendOutfit(userId, requestDto);
     }
 }
