@@ -18,6 +18,7 @@ public class AiRecommendationResponse {
     @Getter
     public static class Body {
         private String summary;
+        private String weather;
         private List<RecommendationItem> result;
     }
 
@@ -28,5 +29,13 @@ public class AiRecommendationResponse {
         private String reason;
         private String virtualTryonImage;
         private String virtualTryonError;
+        private List<ClothesItem> clothing_links;
+    }
+
+    @Getter
+    public static class ClothesItem {
+        private String id;
+        private String category;
+        private String image_url;
     }
 }
