@@ -18,12 +18,12 @@ public class AiRecommendationApiClient {
     @Value("${infra.ai.api.recommendation.base-url}")
     private String BASE_URL;
 
-    public AiRecommendationResponse getAiRecommendation(final String userId, final RecommendOutfitRequest recommendOutfitRequest, final Weather weather) {
+    public AiRecommendationApiResponse getAiRecommendation(final String userId, final RecommendOutfitRequest recommendOutfitRequest, final Weather weather) {
         final AiRecommendationRequest requestBody = getRequestBody(userId, recommendOutfitRequest, weather);
         final HttpEntity<AiRecommendationRequest> requestHttpEntity = new HttpEntity<>(requestBody);
 
         try {
-            return restTemplate.exchange(BASE_URL, HttpMethod.POST, requestHttpEntity, AiRecommendationResponse.class).getBody();
+            return restTemplate.exchange(BASE_URL, HttpMethod.POST, requestHttpEntity, AiRecommendationApiResponse.class).getBody();
         } catch (Exception e) {
             throw new AiRecommendationServerException(ErrorCode.AI_RECOMMENDATION_SERVER_ERROR);
         }

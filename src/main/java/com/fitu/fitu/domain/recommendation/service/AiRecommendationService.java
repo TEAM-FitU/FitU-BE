@@ -10,7 +10,7 @@ import com.fitu.fitu.domain.recommendation.service.WeatherService.Weather;
 import com.fitu.fitu.domain.user.exception.UserNotFoundException;
 import com.fitu.fitu.global.error.ErrorCode;
 import com.fitu.fitu.infra.ai.recommendation.AiRecommendationApiClient;
-import com.fitu.fitu.infra.ai.recommendation.AiRecommendationResponse;
+import com.fitu.fitu.infra.ai.recommendation.AiRecommendationApiResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,16 +33,16 @@ public class AiRecommendationService {
     public AiRecommendation recommendOutfit(final String userId, final RecommendOutfitRequest requestDto) {
         final Weather weather = weatherService.getWeather(requestDto.date(), requestDto.place());
 
-        final AiRecommendationResponse aiRecommendationResponse = aiRecommendationApiClient.getAiRecommendation(userId, requestDto, weather);
+        final AiRecommendationApiResponse aiRecommendationApiResponse = aiRecommendationApiClient.getAiRecommendation(userId, requestDto, weather);
 
-        validateAiRecommendationResponse(aiRecommendationResponse);
+        validateAiRecommendationResponse(aiRecommendationApiResponse);
 
-        final AiRecommendation aiRecommendation = getAiRecommendation(userId, aiRecommendationResponse);
+        final AiRecommendation aiRecommendation = getAiRecommendation(userId, aiRecommendationApiResponse);
 
         return aiRecommendationRepository.save(aiRecommendation);
     }
 
-    private void validateAiRecommendationResponse(final AiRecommendationResponse response) {
+    private void validateAiRecommendationResponse(final AiRecommendationApiResponse response) {
         final String resultMsg = response.getHeader().getResultMsg();
 
         if (resultMsg.equals(ERROR_USER_NOT_FOUND)) {
@@ -58,9 +58,9 @@ public class AiRecommendationService {
         }
     }
 
-    private AiRecommendation getAiRecommendation(final String userId, final AiRecommendationResponse aiRecommendationResponse) {
-        final AiRecommendationResponse.Body body = aiRecommendationResponse.getBody();
-        final List<AiRecommendationResponse.RecommendationItem> result = body.getResult();
+    private AiRecommendation getAiRecommendation(final String userId, final AiRecommendationApiResponse aiRecommendationAPIResponse) {
+        final AiRecommendationApiResponse.Body body = aiRecommendationAPIResponse.getBody();
+        final List<AiRecommendationApiResponse.RecommendationItem> result = body.getResult();
 
         return AiRecommendation.builder()
                 .userId(userId)

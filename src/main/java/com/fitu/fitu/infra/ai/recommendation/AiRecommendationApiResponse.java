@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class AiRecommendationResponse {
+public class AiRecommendationApiResponse {
     private Header header;
     private Body body;
 
