@@ -1,5 +1,6 @@
 package com.fitu.fitu.domain.clothes.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -9,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fitu.fitu.domain.clothes.dto.request.ClothesAndUserInfoRequest;
 import com.fitu.fitu.domain.clothes.dto.request.ClothesRequest;
-import com.fitu.fitu.domain.clothes.entity.enums.Type; 
+import com.fitu.fitu.domain.clothes.entity.enums.Type;
 import com.fitu.fitu.domain.user.service.UserService;
 import com.fitu.fitu.global.error.ErrorCode;
 import com.fitu.fitu.global.error.exception.BusinessException;
@@ -74,12 +75,10 @@ public class RegistrationOrchestrator {
             throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
         }
 
-        boolean hasTop = false;
-        boolean hasBottom = false;
-        boolean hasOnepiece = false;
+        final List<Type> topItems = new ArrayList<>();
+        final List<Type> bottomItems = new ArrayList<>();
 
         for (ClothesRequest item : clothesItems) {
-
             final List<Supplier<Object>> attributeSuppliers = List.of(
                     item::type,
                     item::category,
@@ -90,20 +89,18 @@ public class RegistrationOrchestrator {
                     .orElseThrow(() -> new BusinessException(ErrorCode.CLOTHES_ATTRIBUTES_REQUIRED)));
 
             if (item.type() == Type.TOP) {
-                hasTop = true;
+                topItems.add(item.type());
             } else if (item.type() == Type.BOTTOM) {
-                hasBottom = true;
-            } else if (item.type() == Type.ONEPIECE) {
-                hasOnepiece = true;
+                bottomItems.add(item.type());
             }
-
         }
 
-        final boolean hasValidCombination = (hasTop && hasBottom) || hasOnepiece;
+        final int possibleSets = Math.min(topItems.size(), bottomItems.size());
 
-        if (!hasValidCombination) {
-            log.error("유효하지 않은 의류 조합: 상의와 하의 한벌 또는 원피스가 필요함");
+        if (possibleSets < 3) {
+            log.error("유효하지 않은 의류 조합: 상의와 하의 조합으로 최소 3세트가 필요함. 현재 세트: {}", possibleSets);
             throw new BusinessException(ErrorCode.CLOTHES_INVALID_CLOTHES_COMBINATION);
         }
     }
+
 }

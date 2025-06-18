@@ -3,6 +3,7 @@ package com.fitu.fitu.domain.clothes.controller;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +28,7 @@ import com.fitu.fitu.domain.clothes.dto.response.ClothesUpdateResponse;
 import com.fitu.fitu.domain.clothes.service.ClothesService;
 import com.fitu.fitu.domain.clothes.service.RegistrationOrchestrator;
 import com.fitu.fitu.infra.ai.clothes.AiAnalysisResponse;
-
+ 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,8 +64,7 @@ public class ClothesController {
 
         log.info("의류 및 사용자 정보 저장 요청");
         final String registrationResponse = registrationOrchestrator.saveClothesAndUserInfo(request);
-        // log.info("의류 및 사용자 정보 저장 완료 - 사용자 ID: {}", registrationResponse.userId());
-        // 사용자 uuid값 반환. 나중에 사용자 uuid값 사용
+        log.info("의류 및 사용자 정보 저장 완료 - 사용자 ID: {}", registrationResponse);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(ClothesSuccessResponse.of("의류 및 사용자 정보가 저장되었습니다.", registrationResponse));

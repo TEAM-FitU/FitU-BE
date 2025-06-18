@@ -4,6 +4,7 @@ import com.fitu.fitu.domain.user.dto.request.ProfileRequest;
 import com.fitu.fitu.domain.user.dto.response.BodyImageAnalysisResponse;
 import com.fitu.fitu.infra.ai.bodyimage.AiBodyImageResponse;
 import com.fitu.fitu.domain.user.entity.User;
+import com.fitu.fitu.domain.user.entity.enums.Gender;
 import com.fitu.fitu.domain.user.exception.UserNotFoundException;
 import com.fitu.fitu.domain.user.repository.UserRepository;
 import com.fitu.fitu.global.util.FileValidator;
@@ -36,7 +37,16 @@ public class UserService {
 
     @Transactional
     public User registerProfile(final ProfileRequest requestDto) {
-        final String userId = generateUserId();
+
+        final String userId;
+
+        if (requestDto.gender() == Gender.MALE) {
+            userId = "474e8758-eb04-4b8d-a41f-5ef50c80cc1d";
+        } else if (requestDto.gender() == Gender.FEMALE) {
+            userId = "15ac1f5b-85b5-407f-a90e-ee757db56085";
+        } else {
+            userId = generateUserId();
+        }
 
         final User user = requestDto.toEntity(userId);
 
