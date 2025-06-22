@@ -15,7 +15,7 @@ public class WebConfig implements WebMvcConfigurer {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.addAllowedOrigin("http://localhost:5173");
-        config.addAllowedOrigin("배포 시 URL");
+        config.addAllowedOrigin("https://www.fitu.today");
         config.setAllowCredentials(true);
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");
