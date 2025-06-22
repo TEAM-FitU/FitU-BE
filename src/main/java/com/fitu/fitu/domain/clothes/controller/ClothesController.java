@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fitu.fitu.domain.clothes.dto.request.ClothesAndUserInfoRequest;
-import com.fitu.fitu.domain.clothes.dto.request.ClothesFilterRequest; 
+import com.fitu.fitu.domain.clothes.dto.request.ClothesFilterRequest;
 import com.fitu.fitu.domain.clothes.dto.request.ClothesUpdateRequest;
 import com.fitu.fitu.domain.clothes.dto.request.NewClothesRequest;
 import com.fitu.fitu.domain.clothes.dto.response.ClothesListResponse;
@@ -63,8 +63,7 @@ public class ClothesController {
 
         log.info("의류 및 사용자 정보 저장 요청");
         final String registrationResponse = registrationOrchestrator.saveClothesAndUserInfo(request);
-        // log.info("의류 및 사용자 정보 저장 완료 - 사용자 ID: {}", registrationResponse.userId());
-        // 사용자 uuid값 반환. 나중에 사용자 uuid값 사용
+        log.info("의류 및 사용자 정보 저장 완료 - 사용자 ID: {}", registrationResponse);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(ClothesSuccessResponse.of("의류 및 사용자 정보가 저장되었습니다.", registrationResponse));
